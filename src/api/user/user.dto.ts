@@ -5,3 +5,7 @@ export interface IRegistrationRequest{
     avatar?:string;
 }
 
+export interface IActivationMailReplacement{
+    name:string;
+    activationCode:string;
+}
