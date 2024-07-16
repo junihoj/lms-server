@@ -22,10 +22,10 @@ app.get("/", (_req, res)=>{
     })
 })
 appRoutes(app);
+
+app.use(errorHandler);
 app.all("*", (req, res, next)=>{
     const err = new Error(`Route ${req.originalUrl} not found`);
     err.message = "Route not found";
     next(err);
 })
-
-app.use(errorHandler);
