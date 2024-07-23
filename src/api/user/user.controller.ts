@@ -11,20 +11,32 @@ class UserController {
     this.userService = userService;
   }
 
-  async createUser(req: Request, res: Response, next:NextFunction) {
+  async createUser(req: Request, res: Response, next: NextFunction) {
     try {
       const token = await this.userService.createUser(req.body);
       res.status(200).json({
-        success:true,
-        message:"An Email message has been sent to your inbox",
-        activationToken:token
+        success: true,
+        message: "An Email message has been sent to your inbox",
+        activationToken: token
       });
-    } catch (error:any) {
+    } catch (error: any) {
       next(error)
     }
   }
 
- 
+  async activateUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = await this.userService.activateUser(req.body);
+      if (user) {
+        res.status(200).json({
+          success: true,
+          message: "User Created Successfully",
+        });
+      }
+    } catch (error: any) {
+      next(error)
+    }
+  }
 }
 
 export default UserController;
