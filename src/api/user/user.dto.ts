@@ -20,3 +20,8 @@ export interface IActivationData {
     activationCode: string;
 }
 
+export interface ILoginDto {
+    email: string;
+    password: string;
+}
+
