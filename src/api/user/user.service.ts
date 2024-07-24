@@ -224,30 +224,34 @@ class UserService {
 
   }
 
-  async updateProfileAvatar(data: any, req: Request) {
-    const { avatar } = data;
+  async updateProfileAvatar(userId: string, data: any) {
+    try {
+      const { avatar } = data;
+      if (!userId) throw new ErrorHandler("Invalid Session, Please Login and try again", 403);
+      const user = await this.userModel.findById(userId);
+      if (!user) throw new ErrorHandler("User not found", 404)
+      if (avatar && user) {
+        if (user?.avatar?.public_id) {
+          await Cloudinay.v2.uploader.destroy(user?.avatar?.public_id)
+        }
 
-    const userId = req?.user?._id;
+        const avatarUpload = await Cloudinay.v2.uploader.upload(avatar, {
+          folder: "avatars",
+          width: 150,
+        });
+        user.avatar = {
+          public_id: avatarUpload.public_id,
+          url: avatarUpload.secure_url
+        }
 
-    const user = await this.userModel.findById(userId);
-    if (avatar && user) {
-      if (user?.avatar?.public_id) {
-        await Cloudinay.v2.uploader.destroy(user?.avatar?.public_id)
+        await user.save();
+        await redis.set(user._id as string, JSON.stringify(user));
+        return user;
+      } else {
+        throw new ErrorHandler("Invalid parameter provided", 400)
       }
-
-      const avatarUpload = await Cloudinay.v2.uploader.upload(avatar, {
-        folder: "avatars",
-        width: 150,
-      });
-      user.avatar = {
-        public_id: avatarUpload.public_id,
-        url: avatarUpload.secure_url
-      }
-
-      await user.save();
-
-      await redis.set(user._id as string, JSON.stringify(user));
-
+    } catch (err) {
+      throw new ErrorHandler("An Error Occur while updating pix", 500)
     }
   }
 

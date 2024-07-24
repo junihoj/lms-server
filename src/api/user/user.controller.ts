@@ -127,6 +127,17 @@ class UserController {
       user,
     })
   }
+
+  async updateUserAvatar(req: Request, res: Response, next: NextFunction) {
+    const reqData = req.body;
+    const userId = req.user?._id;
+    const user = await this.userService.updateProfileAvatar(userId, reqData);
+
+    res.status(200).json({
+      success: true,
+      user,
+    })
+  }
 }
 
 export default UserController;
