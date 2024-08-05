@@ -3,6 +3,8 @@ import { app } from "./app";
 import connectDb from "./config/db";
 import dotenv from "dotenv";
 import { v2 as cloudinary } from "cloudinary"
+import { createServer } from 'http';
+import { Server as WebSocketServer } from "socket.io";
 
 dotenv.config();
 
@@ -13,8 +15,16 @@ cloudinary.config({
 })
 
 const PORT = process.env.PORT || 3000;
+const httpServer = createServer(app);
+const io = new WebSocketServer(httpServer, {});
+// app.listen(PORT, () => {
+//     console.log(`Server is listening on port ${PORT}`);
+//     connectDb();
+// });
 
-app.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`);
+httpServer.listen(PORT, () => {
     connectDb();
+    io.on("connection", (socket) => {
+
+    })
 });

@@ -2,6 +2,7 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 import bcrypt from 'bcryptjs'
 import Container from "typedi";
 import jwt from 'jsonwebtoken'
+import { UserRoleEnum } from "@/common/types/enum";
 
 const emailRegex: RegExp = /''/
 
@@ -19,9 +20,10 @@ export interface IUser extends Document, IUserMethods {
         public_id: string;
         url: string;
     }
-    role: string;
+    role: UserRoleEnum;
     isVerified: boolean;
     courses: Array<{ courseId: string }>;
+
 
 
 }
@@ -58,6 +60,12 @@ const userSchema: Schema<IUser> = new Schema({
     },
     courses: {
         courseId: String,
+    },
+    role: {
+        type: String,
+        required: true,
+        enum: Object.values(UserRoleEnum),
+        default: UserRoleEnum.STUDENT
     }
 }, { timestamps: true })
 
