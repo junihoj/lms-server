@@ -3,7 +3,8 @@ import { IUser } from "@/api/user/userModel"
 declare global {
     namespace Express {
         interface Request {
-            user: IUser
+            user: IUser,
+            file: any,
         }
     }
 }

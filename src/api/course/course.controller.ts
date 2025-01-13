@@ -3,6 +3,7 @@ import { Service } from 'typedi';
 import CourseService from './course.service';
 import { accessTokenOptions, refreshTokenOptions, sendToken } from '@/common/utils/jwt';
 import { ICourse } from './course.model';
+import { completeUpload, initializeUpload, uploadChunk } from '@/common/lib/video-upload/upload-video-chunk';
 
 
 
@@ -139,6 +140,17 @@ class CourseController {
         } catch (err) {
             next(err);
         }
+    }
+
+
+    async initializeVideoUpload(req: Request, res: Response, next: NextFunction) {
+        return initializeUpload(req, res);
+    }
+    async uploadChunk(req: Request, res: Response, next: NextFunction) {
+        return uploadChunk(req, res);
+    }
+    async completeUpload(req: Request, res: Response, next: NextFunction) {
+        return completeUpload(req, res);
     }
 
 }
